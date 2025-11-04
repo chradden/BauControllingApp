@@ -5,8 +5,8 @@ function App() {
   const [health, setHealth] = useState<string>('checking...')
 
   useEffect(() => {
-    const url = import.meta.env.VITE_API_BASE || 'http://localhost:8000'
-    fetch(`${url}/health`).then(r => r.json()).then(d => {
+    // Nutze den konfigurierten Proxy
+    fetch('/api/health').then(r => r.json()).then(d => {
       setHealth(d.status || 'unknown')
     }).catch(() => setHealth('offline'))
   }, [])

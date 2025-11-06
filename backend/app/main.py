@@ -6,6 +6,7 @@ from .api.routes.projects import router as projects_router
 from .api.routes.contracts import router as contracts_router
 from .api.routes.invoices import router as invoices_router
 from .api.routes.users import router as users_router
+from .api.routes.auth import router as auth_router
 
 app = FastAPI(title="Bau-Controlling API", version="0.1.0")
 
@@ -18,7 +19,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 app.include_router(health_router, prefix="")
+app.include_router(auth_router)
 app.include_router(projects_router)
 app.include_router(contracts_router)
 app.include_router(invoices_router)

@@ -48,6 +48,10 @@ class Invoice(Base):
     # OCR & Duplikaterkennung
     document_hash = Column(String(64), nullable=True)  # SHA256 des PDFs
     ocr_data = Column(JSON, nullable=True)            # Rohdaten aus OCR
+    
+    # Relationships
+    contract = relationship("Contract", back_populates="invoices")
+    invoice_lines = relationship("InvoiceLine", back_populates="invoice", cascade="all, delete-orphan")
     ocr_confidence = Column(Numeric(5, 2), nullable=True)  # 0-100%
     
     # Prüfung & Zahlung

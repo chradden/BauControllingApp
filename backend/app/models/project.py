@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, Text, Date, ForeignKey, Enum
 from sqlalchemy.orm import relationship
 from enum import Enum as PyEnum
 from . import Base
+from .user import user_projects
 
 
 class ProjectStatus(str, PyEnum):
@@ -32,5 +33,5 @@ class Project(Base):
     contracts = relationship("Contract", back_populates="project", cascade="all, delete-orphan")
     budget_lines = relationship("BudgetLine", back_populates="project", cascade="all, delete-orphan")
     owner = relationship("User", back_populates="owned_projects")
-    team = relationship("User", secondary="user_projects", back_populates="projects")
+    team = relationship("User", secondary=user_projects, back_populates="projects")
     funding_cases = relationship("FundingCase", back_populates="project", cascade="all, delete-orphan")

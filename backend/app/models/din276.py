@@ -15,8 +15,9 @@ class DIN276CostGroup(Base):
     level = Column(Integer, nullable=False)  # 1=100er, 2=110er, 3=111er
     
     # Self-referential relationship for hierarchical structure
-    children = relationship("DIN276CostGroup", 
-                          backref=relationship("DIN276CostGroup", remote_side=[id]),
+    children = relationship("DIN276CostGroup",
+                          backref="parent",
+                          remote_side=[id],
                           lazy="joined")
     
     # Relationships to other models

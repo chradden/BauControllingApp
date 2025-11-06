@@ -37,10 +37,20 @@ target_metadata = Base.metadata
 
 def get_url():
     """Get database URL from settings"""
-    # Use a local sqlite DB for autogenerate to avoid requiring Postgres to be
-    # running in the developer environment. If you want to run migrations
-    # against Postgres, edit this function to return the real DATABASE_URL.
-    return "sqlite:///./alembic_tmp.db"
+    # Prefer the configured DATABASE_URL (loaded via pydantic Settings).
+    # If the app uses an async driver (e.g. postgresql+asyncpg) we convert it
+    # to the sync driver expected by Alembic's Engine (postgresql+psycopg2).
+    url = getattr(settings, "DATABASE_URL", None)
+    if not url:
+        # fallback to a short-lived sqlite file for offline/autogenerate
+        return "sqlite:///./alembic_tmp.db"
+
+    # If using SQLAlchemy async URL with asyncpg, Alembic's sync engine
+    # needs a sync driver like psycopg2. Convert it automatically.
+    if url.startswith("postgresql+asyncpg"):
+        url = url.replace("+asyncpg", "+psycopg2")
+
+    return url
 
 
 def run_migrations_offline() -> None:

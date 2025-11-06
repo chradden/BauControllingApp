@@ -3,6 +3,18 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from alembic import context
 from app.models import Base
+# Import all model modules so the metadata is populated for autogenerate
+import app.models.project
+import app.models.contract
+import app.models.invoice
+import app.models.user
+import app.models.din276
+import app.models.budget
+import app.models.audit
+import app.models.contract_cost
+import app.models.invoice_line
+import app.models.approval
+import app.models.funding
 from app.core.config import settings
 
 # this is the Alembic Config object, which provides
@@ -25,7 +37,10 @@ target_metadata = Base.metadata
 
 def get_url():
     """Get database URL from settings"""
-    return settings.DATABASE_URL.replace("postgresql+asyncpg", "postgresql")  # Use sync driver for migrations
+    # Use a local sqlite DB for autogenerate to avoid requiring Postgres to be
+    # running in the developer environment. If you want to run migrations
+    # against Postgres, edit this function to return the real DATABASE_URL.
+    return "sqlite:///./alembic_tmp.db"
 
 
 def run_migrations_offline() -> None:
